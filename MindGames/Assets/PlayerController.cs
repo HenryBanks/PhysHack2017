@@ -11,6 +11,13 @@ public class PlayerController : MonoBehaviour {
 	public int count_down = -1;
 	Rigidbody2D rb;
 
+	public float jumpRate = 0.5F;
+	private float nextJump = 0.0F;
+	public float jumpLength = 0.5f;
+	private float jumpEnd=0.0f;
+	private bool isJumping=false;
+	private bool automatic=true;
+
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D> ();
@@ -19,10 +26,12 @@ public class PlayerController : MonoBehaviour {
 	void Lose(){
 		Debug.Log ("You lose!");
 		Destroy (this.gameObject);
+		transform.position = new Vector3 (0,0,-1);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		/*
 		if (count_down < 0) {
 			float vIn = Input.GetAxis ("Vertical");
 			Debug.Log (vIn);
@@ -35,10 +44,46 @@ public class PlayerController : MonoBehaviour {
 			rb.AddForce (new Vector2 (0, speed * 1));
 		}
 		Debug.Log (count_down);
-//		if (Load ("input.dat")) {
-//			rb.AddForce (new Vector2(0, speed));
-//			Reset ("input.dat");
-//		}
+		*/
+
+		float vIn = Input.GetAxis ("Vertical");
+		Debug.Log (vIn);
+		if (Mathf.Abs(vIn)>Mathf.Epsilon && Time.time > nextJump) {
+			nextJump = Time.time + jumpRate;
+			jumpEnd = Time.time + jumpLength;
+			isJumping = true;
+		}
+
+		if (isJumping) {
+			if (Time.time > jumpEnd) {
+				isJumping = false;
+			}
+			rb.AddForce (new Vector2 (0, speed-3*rb.velocity.y));
+		}
+
+		//float vIn = Input.GetAxis ("Vertical");
+		//rb.AddForce (new Vector2 (0, 3*speed * vIn));
+
+		if (Input.anyKeyDown) {
+			automatic = false;
+		}
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
+		}
+
+		if (automatic) {
+			if (Load ("input.dat")) {
+				if (Time.time > nextJump) {
+					nextJump = Time.time + jumpRate;
+					jumpEnd = Time.time + jumpLength;
+					isJumping = true;
+				}
+				Reset ("input.dat");
+			}
+		}
+
+
 		//Debug.Log (rb.velocity.y);
 		if (Mathf.Abs(transform.position.y) > 5.5) {
 			Lose ();
