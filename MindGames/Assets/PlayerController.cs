@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 
 	public float speed=20f;
 	public float max_speed = 2f;
+	public int count_down = -1;
 	Rigidbody2D rb;
 
 	// Use this for initialization
@@ -22,20 +23,26 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//float vIn = Input.GetAxis ("Vertical");
-		//rb.AddForce (new Vector2(0, speed * vIn));
-
-		if (Load ("input.dat")) {
-			rb.AddForce (new Vector2(0, speed));
+		if (count_down < 0) {
+			float vIn = Input.GetAxis ("Vertical");
+			Debug.Log (vIn);
+			if (vIn != 0) {
+				rb.AddForce (new Vector2 (0, speed * vIn));
+				count_down = 5;
+			}
+		} else {
+			count_down -= 1;
+			rb.AddForce (new Vector2 (0, speed * 1));
 		}
-
+		Debug.Log (count_down);
+//		if (Load ("input.dat")) {
+//			rb.AddForce (new Vector2(0, speed));
+//			Reset ("input.dat");
+//		}
 		//Debug.Log (rb.velocity.y);
-		rb.velocity = new Vector2 (0, Mathf.Clamp (rb.velocity.y, -2, 2));
 		if (Mathf.Abs(transform.position.y) > 5.5) {
 			Lose ();
 		}
-
-
 
 	}
 
@@ -81,6 +88,14 @@ public class PlayerController : MonoBehaviour {
 			theReader.Close();
 			return false;
 		}
+	}
+
+	private void Reset(string fileName){
+		StreamWriter theWriter = new StreamWriter (fileName, false, Encoding.Default);
+		using (theWriter) {
+			theWriter.Write ("0");
+		}
+		return;
 	}
 
 }
