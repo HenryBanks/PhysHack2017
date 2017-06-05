@@ -25,8 +25,10 @@ public class PlayerController : MonoBehaviour {
 
 	void Lose(){
 		Debug.Log ("You lose!");
-		Destroy (this.gameObject);
+		//Destroy (this.gameObject);
 		transform.position = new Vector3 (0,0,-1);
+		rb.velocity = new Vector2 (0, 0);
+		transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
 	}
 	
 	// Update is called once per frame
