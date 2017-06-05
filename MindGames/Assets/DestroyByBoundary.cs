@@ -3,8 +3,9 @@ using System.Collections;
 
 public class DestroyByBoundary : MonoBehaviour
 {
-	void OnTriggerExit (Collider other) 
+	void OnTriggerExit2D(Collider2D other) 
 	{
+		Debug.Log ("On Trigger Exit");
 		Destroy(other.gameObject);
 	}
 }
