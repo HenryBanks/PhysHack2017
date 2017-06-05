@@ -68,13 +68,18 @@ public class PlayerController : MonoBehaviour {
 					// deliniators, then send that array to DoStuff()
 					if(line=="1"){
 						Debug.Log("Go UP");
+						return true;
+					}
+					if(line=="0"){
+						Debug.Log("Go DOWN");
+						return false;
 					}
 				}
 			}
 			while (line != null);
 			// Done reading, close the reader and return true to broadcast success    
 			theReader.Close();
-			return true;
+			return false;
 		}
 	}
 
