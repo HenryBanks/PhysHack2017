@@ -22,7 +22,7 @@ public class gameController : MonoBehaviour {
 				pos = -1;
 			}
 			Debug.Log (pos);
-			Vector3 spawnPos = new Vector3 (spawnPosition.x, pos*spawnPosition.y,spawnPosition.z);
+			Vector3 spawnPos = new Vector3 (spawnPosition.x, Random.Range (-4.0f, 9.0f),spawnPosition.z);
 			Quaternion spawnRotation = Quaternion.identity;
 			Instantiate (obstacle, spawnPos, spawnRotation);
 			yield return new WaitForSeconds (spawnWait);

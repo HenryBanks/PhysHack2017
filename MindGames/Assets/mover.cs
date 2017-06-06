@@ -10,4 +10,10 @@ public class mover : MonoBehaviour {
 	{
 		GetComponent<Rigidbody2D>().velocity = new Vector2(-speed,0.0f);
 	}
+
+	void Update(){
+		if (transform.position.x < -20) {
+			Destroy (this.gameObject);
+		}
+	}
 }

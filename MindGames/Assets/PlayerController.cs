@@ -103,11 +103,12 @@ public class PlayerController : MonoBehaviour {
 
 
 		//Debug.Log (rb.velocity.y);
-		if (Mathf.Abs(transform.position.y) > 5.5 && !losing) {
-			losing = true;
-			Lose ();
+		if (!losing) {
+			if (transform.position.y > 10.5 || transform.position.y < -6) {
+				losing = true;
+				Lose ();
+			}
 		}
-
 		setText ();
 
 	}
