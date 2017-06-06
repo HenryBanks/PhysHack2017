@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour {
 	public int count_down = -1;
 	Rigidbody2D rb;
 	public Text scoreText;
+	public Vector3 resetPosition=new Vector3 (0,0,-1);
+	public string input;
+
 
 	public float jumpRate = 0.5F;
 	private float nextJump = 0.0F;
@@ -26,13 +29,17 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D> ();
+		ReadHighScore ("highscore.txt");
 	}
 
-	void Lose(){
+	public void Lose(){
+		losing = true;
 		Debug.Log ("You lose!");
 		if (score > highscore) {
 			highscore = score;
+			SaveHighscore ("highscore.txt");
 		}
+		ReadHighScore ("highscore.txt");
 		StartCoroutine (DeathTimer ());
 		//Destroy (this.gameObject);
 		//transform.position = new Vector3 (0,0,-1);
@@ -59,7 +66,7 @@ public class PlayerController : MonoBehaviour {
 
 		float vIn = Input.GetAxis ("Vertical");
 		//Debug.Log (vIn);
-		if (Mathf.Abs(vIn)>Mathf.Epsilon && Time.time > nextJump) {
+		if (Input.GetButtonDown(input) && Time.time > nextJump) {
 			nextJump = Time.time + jumpRate;
 			jumpEnd = Time.time + jumpLength;
 			isJumping = true;
@@ -140,7 +147,7 @@ public class PlayerController : MonoBehaviour {
 						return true;
 					}
 					if(line=="0"){
-						Debug.Log("Go DOWN");
+						//Debug.Log("Go DOWN");
 						return false;
 					}
 				}
@@ -165,7 +172,7 @@ public class PlayerController : MonoBehaviour {
 		transform.position = new Vector3 (0, -20, -1);
 		yield return new WaitForSeconds (3);
 		Debug.Log ("Alive");
-		transform.position = new Vector3 (0,0,-1);
+		transform.position = resetPosition;
 		rb.velocity = new Vector2 (0, 0);
 		transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
 		losing = false;
@@ -178,5 +185,36 @@ public class PlayerController : MonoBehaviour {
 		string fullString = "SCORE: " + scoreString + "\nHIGHSCORE: " + highscoreString;
 		scoreText.text = fullString;
 	}
+
+	private bool ReadHighScore(string fileName)
+	{
+		string line;
+		StreamReader theReader = new StreamReader(fileName, Encoding.Default);
+		using (theReader)
+		{
+			do
+			{
+				line = theReader.ReadLine();
+
+				if (line != null)
+				{
+					int.TryParse(line,out highscore);
+				}
+			}
+			while (line != null);   
+			theReader.Close();
+			return false;
+		}
+	}
+
+	private void SaveHighscore(string fileName){
+		StreamWriter theWriter = new StreamWriter (fileName, false, Encoding.Default);
+		using (theWriter) {
+			theWriter.Write (highscore.ToString());
+		}
+		return;
+	}
+
+
 
 }
