@@ -2,7 +2,7 @@
 
 Our project looked at controlling a computer using keypresses
 triggered by EEG headsets, in particular the EMOTIV EPOC+ and NeuroSky
-ThinkGear.
+Mindwave Mobile.
 
 ## Code
 The repository has two main components. The bulk of it is the Unity
