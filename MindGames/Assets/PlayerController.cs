@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Text;
 using System.IO;
 
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour {
 	public float max_speed = 2f;
 	public int count_down = -1;
 	Rigidbody2D rb;
+	public Text scoreText;
 
 	public float jumpRate = 0.5F;
 	private float nextJump = 0.0F;
@@ -17,6 +19,9 @@ public class PlayerController : MonoBehaviour {
 	private float jumpEnd=0.0f;
 	private bool isJumping=false;
 	private bool automatic=true;
+	private bool losing=false;
+	private int score = 0;
+	private int highscore=0;
 
 	// Use this for initialization
 	void Start () {
@@ -25,10 +30,14 @@ public class PlayerController : MonoBehaviour {
 
 	void Lose(){
 		Debug.Log ("You lose!");
+		if (score > highscore) {
+			highscore = score;
+		}
+		StartCoroutine (DeathTimer ());
 		//Destroy (this.gameObject);
-		transform.position = new Vector3 (0,0,-1);
-		rb.velocity = new Vector2 (0, 0);
-		transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
+		//transform.position = new Vector3 (0,0,-1);
+		//rb.velocity = new Vector2 (0, 0);
+		//transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
 	}
 	
 	// Update is called once per frame
@@ -49,7 +58,7 @@ public class PlayerController : MonoBehaviour {
 		*/
 
 		float vIn = Input.GetAxis ("Vertical");
-		Debug.Log (vIn);
+		//Debug.Log (vIn);
 		if (Mathf.Abs(vIn)>Mathf.Epsilon && Time.time > nextJump) {
 			nextJump = Time.time + jumpRate;
 			jumpEnd = Time.time + jumpLength;
@@ -87,9 +96,12 @@ public class PlayerController : MonoBehaviour {
 
 
 		//Debug.Log (rb.velocity.y);
-		if (Mathf.Abs(transform.position.y) > 5.5) {
+		if (Mathf.Abs(transform.position.y) > 5.5 && !losing) {
+			losing = true;
 			Lose ();
 		}
+
+		setText ();
 
 	}
 
@@ -97,6 +109,9 @@ public class PlayerController : MonoBehaviour {
 		Vector2 dir = rb.velocity;
 		float angle = Mathf.Atan2(dir.y, dir.x+3.0f) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+		if (!losing) {
+			score += 1;
+		}
 	}
 
 	private bool Load(string fileName)
@@ -143,6 +158,25 @@ public class PlayerController : MonoBehaviour {
 			theWriter.Write ("0");
 		}
 		return;
+	}
+
+	IEnumerator DeathTimer(){
+		Debug.Log ("Dead");
+		transform.position = new Vector3 (0, -20, -1);
+		yield return new WaitForSeconds (3);
+		Debug.Log ("Alive");
+		transform.position = new Vector3 (0,0,-1);
+		rb.velocity = new Vector2 (0, 0);
+		transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
+		losing = false;
+		score = 0;
+	}
+
+	void setText(){
+		string scoreString = score.ToString ();
+		string highscoreString = highscore.ToString ();
+		string fullString = "SCORE: " + scoreString + "\nHIGHSCORE: " + highscoreString;
+		scoreText.text = fullString;
 	}
 
 }
