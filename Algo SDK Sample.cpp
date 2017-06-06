@@ -365,6 +365,40 @@ static void AlgoSdkCallback(sNSK_ALGO_CB_PARAM param) {
 				swprintf(buffer, 512, L"ATT = %3d", att);
 				OutputToEditBox(buffer);
 				OutputLog(buffer);
+
+				/*
+				if(att >= 70) {
+					INPUT ip;
+					// Set up a generic keyboard event.
+					ip.type = INPUT_KEYBOARD;
+					ip.ki.wScan = 0; // hardware scan code for key
+					ip.ki.time = 0;
+					ip.ki.dwExtraInfo = 0;
+					// Press the "A" key
+					ip.ki.wVk = 0x26; // virtual-key code for the "a" key
+					ip.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &ip, sizeof(INPUT));
+					// Release the "A" key
+					ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &ip, sizeof(INPUT));
+				}
+				else if(att <= 40){
+					INPUT ip;
+					// Set up a generic keyboard event.
+					ip.type = INPUT_KEYBOARD;
+					ip.ki.wScan = 0; // hardware scan code for key
+					ip.ki.time = 0;
+					ip.ki.dwExtraInfo = 0;
+					// Press the "A" key
+					ip.ki.wVk = 0x28; // virtual-key code for the "a" key
+					ip.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &ip, sizeof(INPUT));
+					// Release the "A" key
+					ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &ip, sizeof(INPUT));
+				}
+				
+				*/
 				break;
 			}
 			case NSK_ALGO_TYPE_MED:
@@ -382,27 +416,38 @@ static void AlgoSdkCallback(sNSK_ALGO_CB_PARAM param) {
 				OutputToEditBox(buffer);
 				OutputLog(buffer);
 
-				// This structure will be used to create the keyboard
-				// input event.
-				INPUT ip;
-
-				// Pause for 5 seconds.
-				//Sleep(5000);
-
-				// Set up a generic keyboard event.
-				ip.type = INPUT_KEYBOARD;
-				ip.ki.wScan = 0; // hardware scan code for key
-				ip.ki.time = 0;
-				ip.ki.dwExtraInfo = 0;
-
-				// Press the "A" key
-				ip.ki.wVk = 0x57; // virtual-key code for the "a" key
-				ip.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &ip, sizeof(INPUT));
-
-				// Release the "A" key
-				ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &ip, sizeof(INPUT));
+				if(strength > 85 ){
+					INPUT ip;
+					// Set up a generic keyboard event.
+					ip.type = INPUT_KEYBOARD;
+					ip.ki.wScan = 0; // hardware scan code for key
+					ip.ki.time = 0;
+					ip.ki.dwExtraInfo = 0;
+					// Press the "A" key
+					//ip.ki.wVk = 0x57; // virtual-key code for the "a" key
+					ip.ki.wVk = 0x0D;
+					ip.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &ip, sizeof(INPUT));
+					// Release the "A" key
+					ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &ip, sizeof(INPUT));
+				}
+				if (strength < 85) {
+					INPUT ip;
+					// Set up a generic keyboard event.
+					ip.type = INPUT_KEYBOARD;
+					ip.ki.wScan = 0; // hardware scan code for key
+					ip.ki.time = 0;
+					ip.ki.dwExtraInfo = 0;
+					// Press the "A" key
+					//ip.ki.wVk = 0x57; // virtual-key code for the "a" key
+					ip.ki.wVk = 0x28;
+					ip.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &ip, sizeof(INPUT));
+					// Release the "A" key
+					ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &ip, sizeof(INPUT));
+				}
 
 				break;
 			}
